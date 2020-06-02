@@ -62,9 +62,10 @@ router.get('/content', function(req, res, next) {
 // 获取文章列表
 router.get('/list', function(req, res, next) {
     const page = req.query.page;
-    const limit = 9;
-    const startNumber = (page - 1) * limit;
-    const sql  = `select * from article inner join article_content on article.title = article_content.title order by update_time desc limit ${startNumber},${limit}`
+    // const limit = 9;
+    // const startNumber = (page - 1) * limit;
+    const sql = `select * from article inner join article_content on article.title = article_content.title order by update_time desc`
+    // const sql  = `select * from article inner join article_content on article.title = article_content.title order by update_time desc limit ${startNumber},${limit}`
     db.query(sql, (err, result) => {
         if(err) {
             console.log(err)
