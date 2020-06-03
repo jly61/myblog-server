@@ -67,25 +67,33 @@ router.get('/list', function(req, res, next) {
     const sql  = `select * from article inner join article_content on article.title = article_content.title order by update_time desc limit ${startNumber},${limit}`
     const img_sql = 'select image_url from image';
     let imageList;
-    db.query(img_sql, (err, result) => {
-        imageList = result
-    });
-    db.query(sql, (err, result) => {
-        if(err) {
-            console.log(err)
-        } else {
-            result.forEach((item ,index) => {
-                const length = imageList.length - 1;
-                const random = Math.floor(Math.random() * length) + 1;
-                item.imgUrl = imageList[random].image_url
-            });
+    db.query(img_sql, (err2, result2) => {
+        if (err2) {
+            console.log(err2)
             res.json({
-                status: 0,
-                msg: '发布成功',
-                result: result
+                result: err2
+            })
+        } else {
+            console.log(result2)
+            imageList = result2;
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log(err)
+                } else {
+                    result.forEach((item ,index) => {
+                        const length = imageList.length - 1;
+                        const random = Math.floor(Math.random() * length) + 1;
+                        item.imgUrl = imageList[random].image_url
+                    });
+                    res.json({
+                        status: 0,
+                        msg: '发布成功',
+                        result: result
+                    })
+                }
             })
         }
-    })
+    });
 });
 // 获取文章标题列表
 router.get('/title-list', function(req, res, next) {
