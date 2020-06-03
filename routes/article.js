@@ -52,7 +52,6 @@ router.get('/content', function(req, res, next) {
                 status: 0,
                 msg: '查询成功',
                 result: result
-
             })
         }
     })
@@ -62,14 +61,24 @@ router.get('/content', function(req, res, next) {
 // 获取文章列表
 router.get('/list', function(req, res, next) {
     const page = req.query.page;
-    // const limit = 9;
-    // const startNumber = (page - 1) * limit;
-    const sql = `select * from article inner join article_content on article.title = article_content.title order by update_time desc`
-    // const sql  = `select * from article inner join article_content on article.title = article_content.title order by update_time desc limit ${startNumber},${limit}`
+    const limit = req.query.limit;
+    const startNumber = (page - 1) * limit;
+    // const sql = `select * from article inner join article_content on article.title = article_content.title order by update_time desc`
+    const sql  = `select * from article inner join article_content on article.title = article_content.title order by update_time desc limit ${startNumber},${limit}`
+    const img_sql = 'select image_url from image';
+    let imageList;
+    db.query(img_sql, (err, result) => {
+        imageList = result
+    });
     db.query(sql, (err, result) => {
         if(err) {
             console.log(err)
         } else {
+            result.forEach((item ,index) => {
+                const length = imageList.length - 1;
+                const random = Math.floor(Math.random() * length) + 1;
+                item.imgUrl = imageList[random].image_url
+            });
             res.json({
                 status: 0,
                 msg: '发布成功',
