@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
+const log4js = require('log4js');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,6 +22,28 @@ app.use(function (req, res, next) {
     next();
 });
 
+// 日志
+app.use(function (req, res, next) {
+    const log4js = require('log4js');
+
+    log4js.configure({
+        appenders: {
+            production: {
+                type: 'dateFile',
+                filename: '../log/app.log',
+                alwaysIncludePattern: true,
+                keepFileExt: true,
+                daysToKeep: 30,
+            }
+        },
+        categories: {
+            default: { appenders: [ 'production' ], level: 'debug' }
+        }
+    });
+    const logger = log4js.getLogger();
+    logger.info('博客被访问');
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
