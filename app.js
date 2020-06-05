@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require("body-parser");
 const log4js = require('log4js');
+const compression = require('compression')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,6 +22,8 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();
 });
+
+app.use(compression());
 
 // 日志
 app.use(function (req, res, next) {
