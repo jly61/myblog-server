@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require("body-parser");
 const log4js = require('log4js');
-const compression = require('compression')
+const compression = require('compression');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -27,7 +27,6 @@ app.use(compression());
 
 // 日志
 app.use(function (req, res, next) {
-    const log4js = require('log4js');
 
     log4js.configure({
         appenders: {
