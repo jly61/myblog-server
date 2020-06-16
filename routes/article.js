@@ -7,6 +7,39 @@ router.get('/', function (req, res, next) {
 });
 // 编辑更新文章
 
+// 删除文章
+router.post('/delete', function (req, res, next) {
+    const title = req.body.title;
+    const sql1 = `delete from article where title = '${title}'`;
+    const sql2 = `delete from article_content where title = '${title}'`;
+    db.query(sql1, (err, result) => {
+        if (err) {
+            res.json({
+                status: 0,
+                msg: '删除失败',
+                result: err
+            })
+        } else {
+            db.query(sql2, (err2, result2) => {
+                if (err2) {
+                    res.json({
+                        status: 0,
+                        msg: '删除失败',
+                        result: err2
+                    })
+                } else {
+                    res.json({
+                        status: 0,
+                        msg: '删除成功',
+                        result: result2
+                    })
+                }
+            })
+        }
+    })
+
+})
+
 // 添加文章
 router.post('/add', function (req, res, next) {
     const lastTitle = req.body.lastTitle;
@@ -17,8 +50,6 @@ router.post('/add', function (req, res, next) {
     const mdStr = escape(req.body.mdStr);
     const htmlStr = escape(req.body.htmlStr);
     let sql, sql2
-    console.log(lastTitle)
-    console.log(flag)
     if (flag === undefined) {
         sql = `insert into article(title, article_desc, category_name, scan_number, like_number, collect_number) values('${title}', '${desc}', '${categoryName}', 0, 0, 0)`;
         sql2 = `insert into article_content(title, md_str, html_str) values('${title}','${mdStr}','${htmlStr}')`;
@@ -109,7 +140,7 @@ router.get('/list', function (req, res, next) {
 // 后台获取所有文章列表
 // 获取文章标题列表
 router.get('/list-all', function (req, res, next) {
-    const sql = `select title,category_name,update_time from article`;
+    const sql = `select title,category_name,update_time from article order by update_time desc`;
     db.query(sql, (err, result) => {
         if (err) {
             res.json({
