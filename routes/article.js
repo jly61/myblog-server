@@ -157,7 +157,22 @@ router.get('/list-all', function (req, res, next) {
         }
     })
 });
-router.get('/title-list', function (req, res, next) {
-    // let sql = `insert into user(username, password, role) values("liuyi", "123456", 'admin')`
+router.get('/archive-list', function (req, res, next) {
+    const sql = `select * from article order by update_time desc`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            res.json({
+                status: 0,
+                msg: '查询失败',
+                result: err
+            })
+        } else {
+            res.json({
+                status: 0,
+                msg: '查询成功',
+                result: result
+            })
+        }
+    })
 });
 module.exports = router
